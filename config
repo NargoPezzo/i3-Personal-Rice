@@ -1,0 +1,189 @@
+# Set modifier key to WinKey
+set $mod Mod4
+
+# Set display resolution
+
+font pango:Overpass Regular 8
+
+# Press mod key to be able to resize floating windows
+floating_modifier $mod
+
+# Open new terminal
+bindsym $mod+Return exec i3-sensible-terminal
+
+#Close window
+bindsym $mod+Shift+q kill
+
+# Open dmenu 
+bindsym $mod+d exec dmenu_run -fn 'Overpass Mono:pixelsize=15' -l 3 -nf '#707880' -sf '#cc6666' -nb '#1d1f21' -sb '#1d1f21'
+
+#set gaps
+gaps inner 10
+gaps outer 10
+
+# Change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# Alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# Alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Split in horizontal orientation
+bindsym $mod+h split h
+
+# Split in vertical orientation
+bindsym $mod+v split v
+
+# Enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# Change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# Change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# Focus the parent container
+bindsym $mod+a focus parent
+
+# Focus the child container
+#bindsym $mod+d focus child
+
+# set workspace names
+set $ws1 "1_Web"
+set $ws2 "2_Shell"
+set $ws3 "3_Code"
+set $ws4 "4_Docs"
+
+# create workspaces, populate with applications, refocus on ws1
+exec --no-startup-id i3-msg 'workspace $ws1; exec firefox'
+exec --no-startup-id i3-msg 'workspace $ws2; exec i3-sensible-terminal; workspace $ws2'
+exec --no-startup-id i3-msg 'workspace $ws3; exec subl; exec pycharm; workspace $ws2'
+exec --no-startup-id i3-msg 'workspace $ws4; exec libreoffice; workspace $ws2'
+
+
+#assign applications to each specific workspace
+assign [class="Google-chrome"] $ws1
+assign [class="firefox"] $ws1
+assign [class="jetbrains-pycharm"] $ws3
+assign [class="(?i)libreoffice-writer$"] $ws4
+assign [class="(?i)soffice"] $ws4
+assign [class="(?i)libreoffice-calc"] $ws4
+assign [class="(?i)libreoffice.*"] $ws4
+
+# Switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+# Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# Exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# Resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 5 px or 5 ppt
+        bindsym k resize grow height 5 px or 5 ppt
+        bindsym l resize shrink height 5 px or 5 ppt
+        bindsym semicolon resize grow width 5 px or 5 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 5 px or 5 ppt
+        bindsym Down resize grow height 5 px or 5 ppt
+        bindsym Up resize shrink height 5 px or 5 ppt
+        bindsym Right resize grow width 5 px or 5 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+
+
+new_window pixel 2
+
+hide_edge_borders vertical
+
+# Color variables
+set $unfocused_border #1D1F21
+set $focused_border #CC6666
+
+# class                 border  backgr. text    indicator child_border
+client.focused          #ffffff #ffffff #ffffff #ffffff   $focused_border
+client.focused_inactive #ffffff #ffffff #ffffff #ffffff   $focused_border
+client.unfocused        #ffffff #ffffff #ffffff #ffffff   $unfocused_border
+client.urgent           #ffffff #ffffff #ffffff #ffffff   $focused_border
+client.placeholder      #ffffff #ffffff #ffffff #ffffff   #ffffff
+
+client.background       #ffffff
+
+# Apply .Xresource. As far as I know, only needed here if using starx (dont have a login manager)
+exec_always --no-startup-id xrdb ~/.Xresources
+
+# Apply the last colorscheme generated without changing the background by using -n 
+exec_always --no-startup-id wal -R -n
+
+# Apply a background different than the one used by wal
+# If this isn't needed, remove it and remove -n flag from the above command
+exec_always --no-startup-id feh --bg-fill ~/Immagini/Wal/bg2.jpg
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play
+bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# set italian keyboard layout
+exec_always setxkbmap -layout it
+
+# setup polybar
+exec polybar bar
+
+# Brightness Controls
+bindsym XF86MonBrightnessDown exec "sudo ~/bin/fn-backlight.sh down"
+bindsym XF86MonBrightnessUp exec "sudo ~/bin/fn-backlight.sh up"
+
